@@ -13,6 +13,12 @@ const MMenuUpdate = React.lazy(() => import('./views/pages/modules/MMenu/MMenuUp
 const MRole = React.lazy(() => import('./views/pages/modules/MRole/MRole'))
 const MRoleCreate = React.lazy(() => import('./views/pages/modules/MRole/MRoleCreate'))
 const MRoleUpdate = React.lazy(() => import('./views/pages/modules/MRole/MRoleUpdate'))
+const MSensor = React.lazy(() => import('./views/pages/modules/MSensor/MSensor'))
+const MSensorCreate = React.lazy(() => import('./views/pages/modules/MSensor/MSensorCreate'))
+const MSensorUpdate = React.lazy(() => import('./views/pages/modules/MSensor/MSensorUpdate'))
+const MUnit = React.lazy(() => import('./views/pages/modules/MUnit/MUnit'))
+const MUnitCreate = React.lazy(() => import('./views/pages/modules/MUnit/MUnitCreate'))
+const MUnitUpdate = React.lazy(() => import('./views/pages/modules/MUnit/MUnitUpdate'))
 const MUser = React.lazy(() => import('./views/pages/modules/MUser/MUser'))
 const MUserCreate = React.lazy(() => import('./views/pages/modules/MUser/MUserCreate'))
 const MUserUpdate = React.lazy(() => import('./views/pages/modules/MUser/MUserUpdate'))
@@ -49,6 +55,12 @@ const routes = [
   { path: '/masterrole', name: 'MRole', element: MRole },
   { path: '/masterrole/create', name: 'MRoleCreate', element: MRoleCreate },
   { path: '/masterrole/update', name: 'MRoleUpdate', element: MRoleUpdate },
+  { path: '/sensor', name: 'MRole', element: MSensor },
+  { path: '/sensor/create', name: 'MRoleCreate', element: MSensorCreate },
+  { path: '/sensor/update', name: 'MRoleUpdate', element: MSensorUpdate },
+  { path: '/unit', name: 'MRole', element: MUnit },
+  { path: '/unit/create', name: 'MRoleCreate', element: MUnitCreate },
+  { path: '/unit/update', name: 'MRoleUpdate', element: MUnitUpdate },
   { path: '/masteruser', name: 'MUser', element: MUser },
   { path: '/masteruser/create', name: 'MUserCreate', element: MUserCreate },
   { path: '/masteruser/update', name: 'MUserUpdate', element: MUserUpdate },

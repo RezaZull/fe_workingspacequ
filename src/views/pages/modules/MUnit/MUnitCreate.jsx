@@ -15,8 +15,9 @@ import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
 import { useDispatch } from 'react-redux'
 
-const MRoleCreate = () => {
+const MUnitCreate = () => {
   const [name, setName] = useState('')
+  const [symbol, setSymbol] = useState('')
   const Navigate = useNavigate()
   const [flag_active, setFlagActive] = useState(true)
   const dispatch = useDispatch()
@@ -24,15 +25,16 @@ const MRoleCreate = () => {
     e.preventDefault()
     const data = {
       name,
+      symbol,
       flag_active,
     }
     dispatch({ type: 'set', isLoading: true })
-    const resAPi = await ApiService.postDataJWT('/mRole', data)
+    const resAPi = await ApiService.postDataJWT('/mUnit', data)
     dispatch({ type: 'set', isLoading: false })
     if (resAPi.data.success) {
       fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
         if (resSwal.isConfirmed) {
-          Navigate('/masterrole')
+          Navigate('/unit')
         }
       })
     }
@@ -41,16 +43,26 @@ const MRoleCreate = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Form Create Role</CCardHeader>
+        <CCardHeader>Form Create Unit</CCardHeader>
         <CCardBody>
           <CForm onSubmit={todoSave}>
             <CInputGroup className="mb-3">
               <CInputGroupText>Name</CInputGroupText>
               <CFormInput
                 type="text"
-                placeholder="Role Name"
+                placeholder="Unit Name"
                 value={name}
                 onChange={(val) => setName(val.target.value)}
+                required
+              />
+            </CInputGroup>
+            <CInputGroup className="mb-3">
+              <CInputGroupText>Symbol</CInputGroupText>
+              <CFormInput
+                type="text"
+                placeholder="Symbol"
+                value={symbol}
+                onChange={(val) => setSymbol(val.target.value)}
                 required
               />
             </CInputGroup>
@@ -71,4 +83,4 @@ const MRoleCreate = () => {
   )
 }
 
-export default MRoleCreate
+export default MUnitCreate

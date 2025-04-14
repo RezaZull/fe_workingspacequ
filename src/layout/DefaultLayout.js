@@ -28,7 +28,7 @@ const DefaultLayout = () => {
         if (menus != 'none') {
           dispatch({ type: 'set', menuPrivilage: menus })
         } else {
-          return navigate('/500')
+          return navigate('/login')
         }
       }
     }

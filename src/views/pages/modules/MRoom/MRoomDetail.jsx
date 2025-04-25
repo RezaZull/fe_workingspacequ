@@ -1,5 +1,23 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { CCard, CCardHeader, CCardBody, CRow, CCol, CButton, CFormInput } from '@coreui/react'
+import {
+  CCard,
+  CCardHeader,
+  CCardBody,
+  CRow,
+  CCol,
+  CButton,
+  CFormInput,
+  CTabs,
+  CTabList,
+  CTab,
+  CTabContent,
+  CTabPanel,
+  CModalHeader,
+  CModalBody,
+  CModalFooter,
+  CModal,
+  CModalTitle,
+} from '@coreui/react'
 import ApiService from '../../../../utils/axios'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
 import CIcon from '@coreui/icons-react'
@@ -7,17 +25,44 @@ import { cilCheckCircle, cilPen, cilTrash, cilXCircle } from '@coreui/icons'
 import { Box, IconButton } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 const MRoomDetail = () => {
   const [MRoom, setMRoom] = useState([])
   const [MRoomSensor, setMRoomSensor] = useState([])
+  const [HRoomPrice, setHRoomPrice] = useState([])
   const location = useLocation()
   const Navigate = useNavigate()
+  const dispatch = useDispatch()
   const menuPrivilage = useSelector((state) => state.menuPrivilage)
+  const [modalUpdatePrice, setModalUpdatePrice] = useState(false)
+  const [payloadUpdatePrice, setPayloadUpdatePrice] = useState({
+    id_m_room: '',
+    price: '0',
+  })
 
-  const onChangeRole = (idRole) => {
-    setSelectedRole(idRole)
+  const openModal = () => {
+    setModalUpdatePrice(true)
+    setPayloadUpdatePrice({
+      id_m_room: MRoom.id,
+      price: MRoom.price,
+    })
+  }
+  const closeModal = () => {
+    setModalUpdatePrice(false)
+    setPayloadUpdatePrice({})
+  }
+  const todoUpdatePrice = async () => {
+    dispatch({ type: 'set', isLoading: true })
+    const resAPi = await ApiService.postDataJWT('/hRoomPrice', payloadUpdatePrice)
+    dispatch({ type: 'set', isLoading: false })
+    if (resAPi.data.success) {
+      fireNotif.notifSuccess('Successfully Create Data').then((resSwal) => {
+        if (resSwal.isConfirmed) {
+          closeModal()
+        }
+      })
+    }
   }
 
   const TodoDeleteData = async (id) => {
@@ -41,7 +86,11 @@ const MRoomDetail = () => {
     const resMRoomSensor = await ApiService.getDataJWT(
       `/mRoomSensor?searchParam=id_m_room&searchValue=${roomId}`,
     )
+    const resHRoomPrice = await ApiService.getDataJWT(
+      `/hRoomPrice?searchParam=id_m_room&searchValue=${roomId}`,
+    )
     setMRoomSensor(resMRoomSensor.data.data)
+    setHRoomPrice(resHRoomPrice.data.data)
   }
 
   useEffect(() => {
@@ -52,12 +101,17 @@ const MRoomDetail = () => {
       const resMRoomSensor = await ApiService.getDataJWT(
         `/mRoomSensor?searchParam=id_m_room&searchValue=${roomId}`,
       )
+      const resHRoomPrice = await ApiService.getDataJWT(
+        `/hRoomPrice?searchParam=id_m_room&searchValue=${roomId}`,
+      )
       setMRoomSensor(resMRoomSensor.data.data)
+      setHRoomPrice(resHRoomPrice.data.data)
     }
     TodoGetData()
   }, [location.state.id])
 
   const MemoTodo = useMemo(() => MRoomSensor, [MRoomSensor])
+  const MemoTodoHistory = useMemo(() => HRoomPrice, [HRoomPrice])
 
   const columns = useMemo(
     () => [
@@ -94,6 +148,21 @@ const MRoomDetail = () => {
     ],
     [],
   )
+  const columnsHistory = useMemo(
+    () => [
+      {
+        accessorKey: 'price', //simple recommended way to define a column
+        header: 'Price', //custom props
+        enableHiding: false, //disable a feature for this column
+      },
+      {
+        accessorKey: 'created_at', //simple recommended way to define a column
+        header: 'Date', //custom props
+        enableHiding: false, //disable a feature for this column
+      },
+    ],
+    [],
+  )
   const tabel = useMaterialReactTable({
     columns,
     data: MemoTodo,
@@ -124,6 +193,10 @@ const MRoomDetail = () => {
       return action
     },
   })
+  const tabelHistory = useMaterialReactTable({
+    columns: columnsHistory,
+    data: MemoTodoHistory,
+  })
 
   return (
     <>
@@ -132,7 +205,7 @@ const MRoomDetail = () => {
         <CCardBody>
           {menuPrivilage.flag_update ? (
             <CRow>
-              <CCol style={{ display: 'flex', justifyContent: 'end' }}>
+              <CCol style={{ display: 'flex', justifyContent: 'end', gap: '.5rem' }}>
                 <CButton
                   onClick={() => {
                     Navigate('/room/update', { state: { id: MRoom.id } })
@@ -140,6 +213,15 @@ const MRoomDetail = () => {
                   color="warning"
                 >
                   Update
+                </CButton>
+                <CButton
+                  variant="outline"
+                  onClick={() => {
+                    openModal()
+                  }}
+                  color="warning"
+                >
+                  Change Price
                 </CButton>
               </CCol>
             </CRow>
@@ -182,31 +264,79 @@ const MRoomDetail = () => {
       </CCard>
 
       <CCard className="mb-4">
-        <CCardHeader>Room Sensors</CCardHeader>
+        <CCardHeader>Detail Room</CCardHeader>
         <CCardBody>
-          {menuPrivilage.flag_create ? (
-            <CRow>
-              <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
-                <CButton
-                  onClick={() => {
-                    Navigate('/room/detail/create', {
-                      state: { id_m_room: MRoom.id },
-                    })
-                  }}
-                  color="primary"
-                >
-                  Add
-                </CButton>
-              </CCol>
-            </CRow>
-          ) : null}
-          <CRow>
-            <CCol>
-              <MaterialReactTable table={tabel} />
-            </CCol>
-          </CRow>
+          <CTabs activeItemKey="roomSensor">
+            <CTabList variant="tabs">
+              <CTab itemKey="roomSensor">Room Sensor</CTab>
+              <CTab itemKey="priceHistory">Price History</CTab>
+            </CTabList>
+            <CTabContent>
+              <CTabPanel className="p-3" itemKey="roomSensor">
+                {menuPrivilage.flag_create ? (
+                  <CRow>
+                    <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
+                      <CButton
+                        onClick={() => {
+                          Navigate('/room/detail/create', {
+                            state: { id_m_room: MRoom.id },
+                          })
+                        }}
+                        color="primary"
+                      >
+                        Add
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                ) : null}
+                <CRow>
+                  <CCol>
+                    <MaterialReactTable table={tabel} />
+                  </CCol>
+                </CRow>
+              </CTabPanel>
+              <CTabPanel className="p-3" itemKey="priceHistory">
+                <CRow>
+                  <CCol>
+                    <MaterialReactTable table={tabelHistory} />
+                  </CCol>
+                </CRow>
+              </CTabPanel>
+            </CTabContent>
+          </CTabs>
         </CCardBody>
       </CCard>
+
+      <CModal visible={modalUpdatePrice}>
+        <CModalHeader>
+          <CModalTitle>Update Price</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CCol>
+            <CFormInput
+              className="mb-3"
+              label="New Price"
+              value={payloadUpdatePrice.price}
+              onChange={(val) =>
+                setPayloadUpdatePrice({ ...payloadUpdatePrice, price: val.target.value })
+              }
+            />
+          </CCol>
+        </CModalBody>
+        <CModalFooter>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              closeModal()
+            }}
+          >
+            Close
+          </CButton>
+          <CButton onClick={() => todoUpdatePrice()} color="primary">
+            Save changes
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   )
 }

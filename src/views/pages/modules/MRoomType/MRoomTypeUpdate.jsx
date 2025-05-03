@@ -69,7 +69,7 @@ const MRoomTypeUpdate = () => {
               <CInputGroupText>Name</CInputGroupText>
               <CFormInput
                 type="text"
-                placeholder="Unit Name"
+                placeholder="Room Type Name"
                 value={name}
                 onChange={(val) => setName(val.target.value)}
                 required

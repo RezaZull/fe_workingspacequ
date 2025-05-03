@@ -62,7 +62,7 @@ const MSensorUpdate = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Form Update Role</CCardHeader>
+        <CCardHeader>Form Update Sensor</CCardHeader>
         <CCardBody>
           <CForm onSubmit={todoUpdate}>
             <CInputGroup className="mb-3">

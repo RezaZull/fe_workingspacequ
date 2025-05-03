@@ -67,7 +67,7 @@ const MMenuGroupCreate = () => {
               <CInputGroupText>Name</CInputGroupText>
               <CFormInput
                 type="text"
-                placeholder="Menu Group Name"
+                placeholder="Room Name"
                 value={name}
                 onChange={(val) => setName(val.target.value)}
                 required
@@ -77,7 +77,7 @@ const MMenuGroupCreate = () => {
               <CInputGroupText>Price</CInputGroupText>
               <CFormInput
                 type="text"
-                placeholder="Menu Group Name"
+                placeholder="Room Price"
                 value={price}
                 onChange={(val) => setPrice(val.target.value)}
                 required

@@ -35,6 +35,7 @@ const MRoomSensorUpdate = React.lazy(() => import('./views/pages/modules/MRoom/M
 
 const ProductList = React.lazy(() => import('./views/pages/modules/ProductList/ProductList'))
 const Cart = React.lazy(() => import('./views/pages/modules/Cart/Cart'))
+const Payment = React.lazy(() => import('./views/pages/modules/Cart/Payment'))
 
 const MMenuGroupDetail = React.lazy(
   () => import('./views/pages/modules/MMenuGroup/MMenuGroupDetail'),
@@ -86,6 +87,7 @@ const routes = [
   { path: '/roomType/update', name: 'Room Type Update', element: MRoomTypeUpdate },
   { path: '/productlist', name: 'Product List', element: ProductList },
   { path: '/cart', name: 'Cart', element: Cart },
+  { path: '/cart/payment', name: 'Payment', element: Payment },
 
   { path: '/room', name: 'Room', element: MRoom },
   { path: '/room/create', name: 'Room Create', element: MRoomCreate },

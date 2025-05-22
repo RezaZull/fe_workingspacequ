@@ -26,11 +26,17 @@ import { Box, IconButton } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
 import { useDispatch, useSelector } from 'react-redux'
+import envEndpoint from '../../../../utils/envEndpoint'
+import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 
 const MRoomDetail = () => {
   const [MRoom, setMRoom] = useState([])
   const [MRoomSensor, setMRoomSensor] = useState([])
   const [HRoomPrice, setHRoomPrice] = useState([])
+  const [RoomImage, setRoomImage] = useState([])
+  const [modalFormUpladImage, setModalFormUpladImage] = useState(false)
+  const [dataImage, setDataImage] = useState([])
+  const BASEURL = envEndpoint.baseAPi
   const location = useLocation()
   const Navigate = useNavigate()
   const dispatch = useDispatch()
@@ -79,6 +85,20 @@ const MRoomDetail = () => {
       }
     })
   }
+  const TodoDeleteDataImage = async (id) => {
+    fireNotif.notifWarning('Delete this item?').then(async (swalRes) => {
+      if (swalRes.isConfirmed) {
+        const resAPi = await ApiService.deleteDataJWT('/mRoomImage/uploadPicture', id)
+        if (resAPi.data.success) {
+          fireNotif.notifSuccess('Succesfully delete data').then((res) => {
+            if (res.isConfirmed) {
+              reloadData()
+            }
+          })
+        }
+      }
+    })
+  }
   const reloadData = async () => {
     const roomId = location.state.id
     const res = await ApiService.getDataJWT('/mRoom/' + roomId)
@@ -89,8 +109,12 @@ const MRoomDetail = () => {
     const resHRoomPrice = await ApiService.getDataJWT(
       `/hRoomPrice?searchParam=id_m_room&searchValue=${roomId}`,
     )
+    const resRoomImage = await ApiService.getDataJWT(
+      `/mRoomImage?searchParam=id_m_room&searchValue=${roomId}`,
+    )
     setMRoomSensor(resMRoomSensor.data.data)
     setHRoomPrice(resHRoomPrice.data.data)
+    setRoomImage(resRoomImage.data.data)
   }
 
   useEffect(() => {
@@ -104,14 +128,19 @@ const MRoomDetail = () => {
       const resHRoomPrice = await ApiService.getDataJWT(
         `/hRoomPrice?searchParam=id_m_room&searchValue=${roomId}`,
       )
+      const resRoomImage = await ApiService.getDataJWT(
+        `/mRoomImage?searchParam=id_m_room&searchValue=${roomId}`,
+      )
       setMRoomSensor(resMRoomSensor.data.data)
       setHRoomPrice(resHRoomPrice.data.data)
+      setRoomImage(resRoomImage.data.data)
     }
     TodoGetData()
   }, [location.state.id])
 
   const MemoTodo = useMemo(() => MRoomSensor, [MRoomSensor])
   const MemoTodoHistory = useMemo(() => HRoomPrice, [HRoomPrice])
+  const MemoTodoRoomImage = useMemo(() => RoomImage, [RoomImage])
 
   const columns = useMemo(
     () => [
@@ -163,6 +192,16 @@ const MRoomDetail = () => {
     ],
     [],
   )
+  const columnsRoomImage = useMemo(
+    () => [
+      {
+        header: 'Images', //custom props
+        enableHiding: false, //disable a feature for this column
+        accessorFn: (row) => <img src={`${BASEURL}/${row.img_path}`} />,
+      },
+    ],
+    [BASEURL],
+  )
   const tabel = useMaterialReactTable({
     columns,
     data: MemoTodo,
@@ -197,6 +236,47 @@ const MRoomDetail = () => {
     columns: columnsHistory,
     data: MemoTodoHistory,
   })
+  const tabelRoomImage = useMaterialReactTable({
+    columns: columnsRoomImage,
+    data: MemoTodoRoomImage,
+    enableRowActions: true,
+    renderRowActions: ({ row }) => {
+      const action =
+        menuPrivilage.flag_update || menuPrivilage.flag_delete ? (
+          <Box>
+            {menuPrivilage.flag_delete ? (
+              <IconButton onClick={() => TodoDeleteDataImage(row.original.id)}>
+                <CIcon icon={cilTrash} className="text-danger" size="lg" />
+              </IconButton>
+            ) : null}
+          </Box>
+        ) : null
+
+      return action
+    },
+  })
+
+  const showModalUploadImage = () => {
+    setModalFormUpladImage((data) => !data)
+  }
+  const todoUploadImage = async () => {
+    console.log('upload...')
+    const profile = await localStorageService.getData(localStorageKey.user)
+    const formData = new FormData()
+    formData.append('img_file', dataImage.img_file)
+    formData.append('id_m_room', MRoom.id)
+    formData.append('user_id', profile.id)
+    dispatch({ type: 'set', isLoading: true })
+    const res = await ApiService.uploadFileJWT(`/mRoomImage/uploadPicture`, formData)
+    dispatch({ type: 'set', isLoading: false })
+    if (res.data.success) {
+      fireNotif.notifSuccess('Successfully Upload Data').then((resSwal) => {
+        if (resSwal.isConfirmed) {
+          showModalUploadImage()
+        }
+      })
+    }
+  }
 
   return (
     <>
@@ -270,6 +350,7 @@ const MRoomDetail = () => {
             <CTabList variant="tabs">
               <CTab itemKey="roomSensor">Room Sensor</CTab>
               <CTab itemKey="priceHistory">Price History</CTab>
+              <CTab itemKey="roomImage">Room Image</CTab>
             </CTabList>
             <CTabContent>
               <CTabPanel className="p-3" itemKey="roomSensor">
@@ -302,11 +383,64 @@ const MRoomDetail = () => {
                   </CCol>
                 </CRow>
               </CTabPanel>
+              <CTabPanel className="p-3" itemKey="roomImage">
+                {menuPrivilage.flag_create ? (
+                  <CRow>
+                    <CCol style={{ display: 'flex', justifyContent: 'end' }} className="mb-3">
+                      <CButton onClick={() => showModalUploadImage()} color="primary">
+                        Upload Image
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                ) : null}
+                <CRow>
+                  <CCol>
+                    <MaterialReactTable table={tabelRoomImage} />
+                  </CCol>
+                </CRow>
+              </CTabPanel>
             </CTabContent>
           </CTabs>
         </CCardBody>
       </CCard>
 
+      <CModal visible={modalFormUpladImage}>
+        <CModalHeader>
+          <CModalTitle>Upload Image</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CCol>
+            <CFormInput
+              type="file"
+              className="mb-3"
+              placeholder="Image File"
+              label="Image File"
+              name="img_file"
+              onChange={(val) =>
+                setDataImage((pref) => {
+                  return {
+                    ...pref,
+                    [val.target.name]: val.target.files[0],
+                  }
+                })
+              }
+            />
+          </CCol>
+        </CModalBody>
+        <CModalFooter>
+          <CButton
+            color="secondary"
+            onClick={() => {
+              showModalUploadImage()
+            }}
+          >
+            Close
+          </CButton>
+          <CButton onClick={() => todoUploadImage()} color="primary">
+            Upload Image
+          </CButton>
+        </CModalFooter>
+      </CModal>
       <CModal visible={modalUpdatePrice}>
         <CModalHeader>
           <CModalTitle>Update Price</CModalTitle>

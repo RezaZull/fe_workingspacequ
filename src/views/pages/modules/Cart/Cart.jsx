@@ -14,10 +14,12 @@ import {
 import ApiService from '../../../../utils/axios'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 const Baseweb = () => {
   const [todo, setTodo] = useState([])
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const getData = async () => {
     const userId = localStorageService.getData(localStorageKey.user)
     const res = await ApiService.getDataJWT(
@@ -35,14 +37,14 @@ const Baseweb = () => {
     getData()
   }, [])
 
-  useEffect(() => {
-    const onClosePage = async () => {
-      const res = await ApiService.updateDataJWT('/tCartLineBulk/update', { data: [...todo] })
-    }
-    return () => {
-      onClosePage()
-    }
-  }, [todo])
+  // useEffect(() => {
+  //   const onClosePage = async () => {
+  //     const res = await ApiService.updateDataJWT('/tCartLineBulk/update', { data: [...todo] })
+  //   }
+  //   return () => {
+  //     onClosePage()
+  //   }
+  // }, [todo])
 
   const onChangeCheck = (idx) => {
     const newData = [...todo]
@@ -52,8 +54,21 @@ const Baseweb = () => {
 
   const onChangeDate = (idx, value) => {
     const newData = [...todo]
-    newData[idx].date_chekin = value
+    newData[idx].date_checkin = value
     setTodo(newData)
+  }
+
+  const onCheckoutPressed = async () => {
+    const dataSend = []
+    todo.map((data, idx) => {
+      if (data.flag_chekced) {
+        dataSend.push(data)
+      }
+    })
+    console.log(dataSend)
+    const res = await ApiService.postDataJWT('/tBookingBulk/createBooking', { data: dataSend })
+    console.log(res.data.data.id)
+    navigate('/cart/payment', { state: { id: res.data.data.id } })
   }
 
   const CartItem = ({ data, idx }) => {
@@ -85,7 +100,7 @@ const Baseweb = () => {
             <input
               type="date"
               className="form-control"
-              value={data?.date_chekin == null ? undefined : data.date_chekin}
+              value={data?.date_checkin == null ? undefined : data.date_checkin}
               onChange={(val) => onChangeDate(idx, val.target.value)}
             />
           </CCol>
@@ -110,7 +125,13 @@ const Baseweb = () => {
           </CListGroup>
         </CCardBody>
         <CCardFooter style={{ display: 'flex', justifyContent: 'end' }}>
-          <CButton color="primary">Checkout</CButton>
+          <CButton
+            disabled={!todo.some((data) => data.flag_chekced && data.date_checkin)}
+            onClick={() => onCheckoutPressed()}
+            color="primary"
+          >
+            Checkout
+          </CButton>
         </CCardFooter>
       </CCard>
     </>

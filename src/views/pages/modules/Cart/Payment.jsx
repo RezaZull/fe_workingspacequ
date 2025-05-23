@@ -70,6 +70,7 @@ const Payment = () => {
         }
         const res = await ApiService.postDataJWT('/midtrans/setBookCode', setBookData)
         console.log(res, 'data ')
+        navigate('/booking')
       },
       onPending: async function (result) {
         /* You may add your own implementation here */
@@ -142,17 +143,19 @@ const Payment = () => {
               <CRow>
                 <CCol>Customer Name</CCol>
                 <CCol>:</CCol>
-                <CCol>Rafifah</CCol>
+                <CCol>
+                  {header?.user?.first_name} {header?.user?.last_name}
+                </CCol>
               </CRow>
               <CRow>
                 <CCol>Date Book</CCol>
                 <CCol>:</CCol>
-                <CCol>16 Juli 2025</CCol>
+                <CCol>{header?.date_book}</CCol>
               </CRow>
               <CRow>
                 <CCol>Booking ID</CCol>
                 <CCol>:</CCol>
-                <CCol>01</CCol>
+                <CCol>{header?.id}</CCol>
               </CRow>
             </CCol>
           </CRow>

@@ -2,6 +2,7 @@ import React, { useEffect, useState, createRef } from 'react'
 import { CCard, CCardHeader, CCardBody, CCardFooter, CButton } from '@coreui/react'
 import { useDispatch } from 'react-redux'
 import ApiService from '../../../../utils/axios'
+import CImg from '../../../../components/CImg'
 
 const ProductList = () => {
   const dispatch = useDispatch()
@@ -31,6 +32,7 @@ const ProductList = () => {
       <CCard>
         <CCardHeader>{data.name}</CCardHeader>
         <CCardBody>
+          <CImg src={data.room_image[0]?.img_path} style={{ width: '200px' }} />
           <h6>Price : RP.{data.price}</h6>
           <h6>
             Capacity : {data.current_capacity}/{data.room_type?.max_capacity}

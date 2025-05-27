@@ -3,23 +3,60 @@ import {
   CCard,
   CCardHeader,
   CCardBody,
-  CCardFooter,
-  CButton,
   CRow,
   CCol,
-  CListGroupItem,
   CListGroup,
+  CListGroupItem,
+  CCardFooter,
+  CButton,
+  CFormTextarea,
+  CModalBody,
+  CModalTitle,
+  CModalHeader,
+  CModal,
+  CModalFooter,
 } from '@coreui/react'
+import { Rating } from 'react-simple-star-rating'
 import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
-import envEndpoint from '../../../../utils/envEndpoint'
+import { useDispatch } from 'react-redux'
+import fireNotif from '../../../../utils/fireNotif'
 import CImg from '../../../../components/CImg'
 
-const Payment = () => {
+const HistoryDetail = () => {
   const location = useLocation()
+  const dispatch = useDispatch()
   const [header, setHeader] = useState({})
   const [detail, setDetail] = useState([])
-  const navigate = useNavigate()
+  const [showModal, setShowModal] = useState(false)
+  const [rating, setRating] = useState(0)
+  const [feedback, setFeedback] = useState('')
+
+  const sendFeedback = async () => {
+    const dataSend = {
+      id_t_booking: header.id,
+      rating: rating,
+      feedback: feedback,
+    }
+    console.log(dataSend)
+    dispatch({ type: 'set', isLoading: true })
+    const res = await ApiService.postDataJWT('/mFeedback', dataSend)
+    dispatch({ type: 'set', isLoading: false })
+    if (res.data.success) {
+      fireNotif.notifSuccess('Successfully Send Feedback').then((resSwal) => {
+        if (resSwal.isConfirmed) {
+          onFeedbackClick()
+        }
+      })
+    }
+  }
+  const onFeedbackClick = () => {
+    if (showModal) {
+      setRating(0)
+      setFeedback('')
+    }
+    setShowModal((pref) => !pref)
+  }
 
   useEffect(() => {
     const getData = async () => {
@@ -28,81 +65,13 @@ const Payment = () => {
       const resDetail = await ApiService.getDataJWT(
         `/tBookingLine?searchParam=id_t_booking&searchValue=${idBooking}`,
       )
-      console.log(resHeader)
-      console.log(resDetail)
+      console.log(resHeader.data.data)
+      console.log(resDetail.data.data)
       setHeader(resHeader.data.data)
       setDetail(resDetail.data.data)
-      const midtransScriptUrl = 'https://app.sandbox.midtrans.com/snap/snap.js'
-
-      let scriptTag = document.createElement('script')
-      scriptTag.src = midtransScriptUrl
-
-      // Optional: set script attribute, for example snap.js have data-client-key attribute
-      // (change the value according to your client-key)
-      const myMidtransClientKey = envEndpoint.midtransClientKey
-      scriptTag.setAttribute('data-client-key', myMidtransClientKey)
-
-      document.body.appendChild(scriptTag)
     }
     getData()
-    return () => {
-      document.body.removeChild(scriptTag)
-    }
   }, [location.state.id])
-
-  const onPaymentClick = async () => {
-    const transTokenData = {
-      grandtotal: header.grandtotal,
-      firstname: header.user.first_name,
-      lastname: header.user.last_name,
-      email: header.user.email,
-    }
-    const transToken = await ApiService.postDataJWT('/midtrans/createPayment', transTokenData)
-    console.log(transToken.data.data.snap_token)
-    window.snap.pay(transToken.data.data.snap_token, {
-      onSuccess: async function (result) {
-        /* You may add your own implementation here */
-        alert('payment success!')
-        console.log(result)
-        const setBookData = {
-          id_t_booking: header.id,
-          order_id: transToken.data.data.order_id,
-          status: 'success',
-        }
-        const res = await ApiService.postDataJWT('/midtrans/setBookCode', setBookData)
-        console.log(res, 'data ')
-        navigate('/booking')
-      },
-      onPending: async function (result) {
-        /* You may add your own implementation here */
-        alert('wating your payment!')
-      },
-      onError: async function (result) {
-        /* You may add your own implementation here */
-        alert('payment failed!')
-        console.log(result)
-        const setBookData = {
-          id_t_booking: header.id,
-          order_id: transToken.data.data.order_id,
-          status: 'failure',
-        }
-        const res = await ApiService.postDataJWT('/midtrans/setBookCode', setBookData)
-        console.log(setBookData, 'data ')
-      },
-      onClose: async function () {
-        /* You may add your own implementation here */
-        alert('you closed the popup without finishing the payment')
-        const setBookData = {
-          id_t_booking: header.id,
-          order_id: transToken.data.data.order_id,
-          status: 'cancel',
-        }
-        const res = await ApiService.postDataJWT('/midtrans/setBookCode', setBookData)
-        console.log(setBookData, 'data ')
-      },
-    })
-  }
-
   const CartItem = ({ data, idx }) => {
     return (
       <CListGroupItem>
@@ -128,6 +97,11 @@ const Payment = () => {
               <CCol xs={8}>Rp.{data?.room?.price}</CCol>
             </CRow>
             <CRow>
+              <CCol xs={2}>Book Code</CCol>
+              <CCol xs={2}>:</CCol>
+              <CCol xs={8}>Rp.{data?.book_code}</CCol>
+            </CRow>
+            <CRow>
               <CCol xs={2}>Date</CCol>
               <CCol xs={2}>:</CCol>
               <CCol xs={8}>{data?.date_checkin}</CCol>
@@ -140,7 +114,7 @@ const Payment = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Payment</CCardHeader>
+        <CCardHeader>Detail History</CCardHeader>
         <CCardBody>
           <CRow>
             <CCol>
@@ -160,6 +134,16 @@ const Payment = () => {
                 <CCol>Booking ID</CCol>
                 <CCol>:</CCol>
                 <CCol>{header?.id}</CCol>
+              </CRow>
+              <CRow>
+                <CCol>Order ID</CCol>
+                <CCol>:</CCol>
+                <CCol>{header?.order_id}</CCol>
+              </CRow>
+              <CRow>
+                <CCol>Payment Status</CCol>
+                <CCol>:</CCol>
+                <CCol>{header?.payment_status}</CCol>
               </CRow>
             </CCol>
           </CRow>
@@ -188,13 +172,41 @@ const Payment = () => {
           </CRow>
         </CCardBody>
         <CCardFooter>
-          <CButton color="success" onClick={() => onPaymentClick()}>
-            Pay
+          <CButton onClick={() => onFeedbackClick()} color="success">
+            Feedback
           </CButton>
         </CCardFooter>
       </CCard>
+      <CModal visible={showModal}>
+        <CModalHeader>
+          <CModalTitle>Feedback Form</CModalTitle>
+        </CModalHeader>
+        <CModalBody>
+          <CCol>
+            <label>Rating</label>
+            <Rating onClick={(rate) => setRating(rate)} />
+          </CCol>
+          <CCol>
+            <CFormTextarea
+              id="feedback"
+              label="Feedback"
+              rows={3}
+              value={feedback}
+              onChange={(val) => setFeedback(val.target.value)}
+            ></CFormTextarea>
+          </CCol>
+        </CModalBody>
+        <CModalFooter>
+          <CButton color="secondary" onClick={() => onFeedbackClick()}>
+            Close
+          </CButton>
+          <CButton onClick={() => sendFeedback()} color="primary">
+            Save changes
+          </CButton>
+        </CModalFooter>
+      </CModal>
     </>
   )
 }
 
-export default Payment
+export default HistoryDetail

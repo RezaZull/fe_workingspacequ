@@ -15,6 +15,7 @@ import ApiService from '../../../../utils/axios'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import CImg from '../../../../components/CImg'
 
 const Baseweb = () => {
   const [todo, setTodo] = useState([])
@@ -78,7 +79,10 @@ const Baseweb = () => {
           <CCol xs={1}>
             <CFormCheck checked={data?.flag_chekced} onChange={() => onChangeCheck(idx)} />
           </CCol>
-          <CCol xs={6}>
+          <CCol xs={2}>
+            <CImg src={data.room.room_image[0]?.img_path} style={{ width: '100%' }} />
+          </CCol>
+          <CCol xs={5}>
             {/* data Room */}
             <CRow>
               <CCol xs={2}>Nama</CCol>
@@ -96,7 +100,7 @@ const Baseweb = () => {
               <CCol xs={8}>Rp.{data?.room?.price}</CCol>
             </CRow>
           </CCol>
-          <CCol xs={3}>
+          <CCol xs={2}>
             <input
               type="date"
               className="form-control"

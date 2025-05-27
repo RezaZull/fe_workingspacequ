@@ -197,7 +197,7 @@ const MRoomDetail = () => {
       {
         header: 'Images', //custom props
         enableHiding: false, //disable a feature for this column
-        accessorFn: (row) => <img src={`${BASEURL}/${row.img_path}`} />,
+        accessorFn: (row) => <img src={`${BASEURL}/${row.img_path}`} height={150} />,
       },
     ],
     [BASEURL],

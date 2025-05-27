@@ -2,6 +2,7 @@ import React, { useEffect, useState, createRef } from 'react'
 import { CCard, CCardHeader, CCardBody, CCardFooter, CButton } from '@coreui/react'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import ApiService from '../../../../utils/axios'
+import CImg from '../../../../components/CImg'
 
 const Booking = () => {
   const [todo, setTodo] = useState([])
@@ -23,6 +24,7 @@ const Booking = () => {
           <h6>Type : {data.room.room_type?.name}</h6>
         </CCardHeader>
         <CCardBody>
+          <CImg src={data.room.room_image[0]?.img_path} style={{ width: '200px' }} />
           <h6>Date : {data.date_checkin}</h6>
           <h6>Code : {data.book_code}</h6>
           <h6>Price : RP.{data.room.price}</h6>

@@ -7,6 +7,8 @@ import CIcon from '@coreui/icons-react'
 import { cilCheckCircle, cilInfo, cilXCircle } from '@coreui/icons'
 import { Box, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import formatMoney from '../../../../utils/formatMoney'
+import formatDate from '../../../../utils/formatDate'
 
 const History = () => {
   const [todo, setTodo] = useState([])
@@ -28,9 +30,9 @@ const History = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'date_book', //simple recommended way to define a column
         header: 'Date Book', //custom props
         enableHiding: false, //disable a feature for this column
+        accessorFn: (row) => formatDate(row.date_book),
       },
       {
         accessorKey: 'payment_status', //simple recommended way to define a column
@@ -38,9 +40,9 @@ const History = () => {
         enableHiding: false, //disable a feature for this column
       },
       {
-        accessorKey: 'grandtotal', //simple recommended way to define a column
         header: 'GrandTotal', //custom props
         enableHiding: false, //disable a feature for this column
+        accessorFn: (row) => formatMoney(row.grandtotal),
       },
       {
         accessorKey: 'order_id', //simple recommended way to define a column

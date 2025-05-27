@@ -16,6 +16,7 @@ import { localStorageKey, localStorageService } from '../../../../utils/localSto
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import CImg from '../../../../components/CImg'
+import formatMoney from '../../../../utils/formatMoney'
 
 const Baseweb = () => {
   const [todo, setTodo] = useState([])
@@ -97,7 +98,7 @@ const Baseweb = () => {
             <CRow>
               <CCol xs={2}>Price</CCol>
               <CCol xs={2}>:</CCol>
-              <CCol xs={8}>Rp.{data?.room?.price}</CCol>
+              <CCol xs={8}>{formatMoney(data?.room?.price)}</CCol>
             </CRow>
           </CCol>
           <CCol xs={2}>
@@ -126,6 +127,11 @@ const Baseweb = () => {
             {todo.map((data, idx) => (
               <CartItem data={data} idx={idx} key={idx} />
             ))}
+            {todo.length == 0 ? (
+              <>
+                <h1 style={{ textAlign: 'center' }}>No Product Available</h1>
+              </>
+            ) : null}
           </CListGroup>
         </CCardBody>
         <CCardFooter style={{ display: 'flex', justifyContent: 'end' }}>

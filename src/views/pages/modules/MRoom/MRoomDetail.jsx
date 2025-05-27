@@ -28,6 +28,8 @@ import fireNotif from '../../../../utils/fireNotif'
 import { useDispatch, useSelector } from 'react-redux'
 import envEndpoint from '../../../../utils/envEndpoint'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
+import formatDate from '../../../../utils/formatDate'
+import formatMoney from '../../../../utils/formatMoney'
 
 const MRoomDetail = () => {
   const [MRoom, setMRoom] = useState([])
@@ -180,14 +182,14 @@ const MRoomDetail = () => {
   const columnsHistory = useMemo(
     () => [
       {
-        accessorKey: 'price', //simple recommended way to define a column
         header: 'Price', //custom props
         enableHiding: false, //disable a feature for this column
+        accessorFn: (row) => formatMoney(row.price),
       },
       {
-        accessorKey: 'created_at', //simple recommended way to define a column
         header: 'Date', //custom props
         enableHiding: false, //disable a feature for this column
+        accessorFn: (row) => formatDate(row.created_at),
       },
     ],
     [],
@@ -329,7 +331,38 @@ const MRoomDetail = () => {
           </CRow>
           <CRow className="mb-3">
             <CCol xs={4}>
-              <CFormInput className="mb-3" label="Price" value={MRoom.price} disabled={true} />
+              <CFormInput
+                className="mb-3"
+                label="Price"
+                value={formatMoney(MRoom.price)}
+                disabled={true}
+              />
+            </CCol>
+            <CCol xs={4}>
+              <CFormInput
+                className="mb-3"
+                label="Max Price"
+                value={formatMoney(MRoom.room_type.max_price)}
+                disabled={true}
+              />
+            </CCol>
+            <CCol xs={4}>
+              <CFormInput
+                className="mb-3"
+                label="Low Price"
+                value={formatMoney(MRoom.room_type.low_price)}
+                disabled={true}
+              />
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol xs={4}>
+              <CFormInput
+                className="mb-3"
+                label="Max Capacity"
+                value={MRoom.room_type.max_capacity}
+                disabled={true}
+              />
             </CCol>
             <CCol xs={4}>
               <CFormInput

@@ -8,6 +8,7 @@ import { Box, IconButton } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import fireNotif from '../../../../utils/fireNotif'
 import { useDispatch, useSelector } from 'react-redux'
+import formatMoney from '../../../../utils/formatMoney'
 
 const MRoom = () => {
   const [todo, setTodo] = useState([])
@@ -55,9 +56,9 @@ const MRoom = () => {
         enableHiding: false, //disable a feature for this column
       },
       {
-        accessorKey: 'price', //simple recommended way to define a column
         header: 'Price', //custom props
         enableHiding: false, //disable a feature for this column
+        accessorFn: (row) => formatMoney(row.price),
       },
       {
         accessorKey: 'current_capacity', //simple recommended way to define a column

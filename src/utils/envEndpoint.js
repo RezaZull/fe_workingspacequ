@@ -4,4 +4,5 @@ export default {
   limitTable: import.meta.env.VITE_LIMIT_TABLE,
   encKey: import.meta.env.VITE_ENC_KEY,
   midtransClientKey: import.meta.env.VITE_MIDTRANS_CLIENT_KEY,
+  formatDate: import.meta.env.VITE_FORMAT_DATE,
 }

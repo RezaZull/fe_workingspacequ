@@ -22,10 +22,13 @@ import ApiService from '../../../../utils/axios'
 import { useDispatch } from 'react-redux'
 import fireNotif from '../../../../utils/fireNotif'
 import CImg from '../../../../components/CImg'
+import formatMoney from '../../../../utils/formatMoney'
+import formatDate from '../../../../utils/formatDate'
 
 const HistoryDetail = () => {
   const location = useLocation()
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [header, setHeader] = useState({})
   const [detail, setDetail] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -94,17 +97,17 @@ const HistoryDetail = () => {
             <CRow>
               <CCol xs={2}>Price</CCol>
               <CCol xs={2}>:</CCol>
-              <CCol xs={8}>Rp.{data?.room?.price}</CCol>
+              <CCol xs={8}>{formatMoney(data?.room?.price)}</CCol>
             </CRow>
             <CRow>
               <CCol xs={2}>Book Code</CCol>
               <CCol xs={2}>:</CCol>
-              <CCol xs={8}>Rp.{data?.book_code}</CCol>
+              <CCol xs={8}>{data?.book_code}</CCol>
             </CRow>
             <CRow>
               <CCol xs={2}>Date</CCol>
               <CCol xs={2}>:</CCol>
-              <CCol xs={8}>{data?.date_checkin}</CCol>
+              <CCol xs={8}>{formatDate(data?.date_checkin)}</CCol>
             </CRow>
           </CCol>
         </CRow>
@@ -128,7 +131,7 @@ const HistoryDetail = () => {
               <CRow>
                 <CCol>Date Book</CCol>
                 <CCol>:</CCol>
-                <CCol>{header?.date_book}</CCol>
+                <CCol>{formatDate(header?.date_book)}</CCol>
               </CRow>
               <CRow>
                 <CCol>Booking ID</CCol>
@@ -166,15 +169,24 @@ const HistoryDetail = () => {
               <CRow>
                 <CCol>Grand Total</CCol>
                 <CCol>:</CCol>
-                <CCol>{header?.grandtotal}</CCol>
+                <CCol>{formatMoney(header?.grandtotal)}</CCol>
               </CRow>
             </CCol>
           </CRow>
         </CCardBody>
         <CCardFooter>
-          <CButton onClick={() => onFeedbackClick()} color="success">
-            Feedback
-          </CButton>
+          {header?.payment_status == 'success' ? (
+            <CButton onClick={() => onFeedbackClick()} color="success">
+              Feedback
+            </CButton>
+          ) : (
+            <CButton
+              onClick={() => navigate('/cart/payment', { state: { id: header.id } })}
+              color="success"
+            >
+              Checkout
+            </CButton>
+          )}
         </CCardFooter>
       </CCard>
       <CModal visible={showModal}>

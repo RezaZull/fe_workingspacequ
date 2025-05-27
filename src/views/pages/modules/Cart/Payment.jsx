@@ -14,6 +14,8 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import envEndpoint from '../../../../utils/envEndpoint'
 import CImg from '../../../../components/CImg'
+import formatMoney from '../../../../utils/formatMoney'
+import formatDate from '../../../../utils/formatDate'
 
 const Payment = () => {
   const location = useLocation()
@@ -32,23 +34,24 @@ const Payment = () => {
       console.log(resDetail)
       setHeader(resHeader.data.data)
       setDetail(resDetail.data.data)
-      const midtransScriptUrl = 'https://app.sandbox.midtrans.com/snap/snap.js'
-
-      let scriptTag = document.createElement('script')
-      scriptTag.src = midtransScriptUrl
-
-      // Optional: set script attribute, for example snap.js have data-client-key attribute
-      // (change the value according to your client-key)
-      const myMidtransClientKey = envEndpoint.midtransClientKey
-      scriptTag.setAttribute('data-client-key', myMidtransClientKey)
-
-      document.body.appendChild(scriptTag)
     }
     getData()
+  }, [location.state.id])
+
+  useEffect(() => {
+    const midtransScriptUrl = 'https://app.sandbox.midtrans.com/snap/snap.js'
+    let scriptTag = document.createElement('script')
+    scriptTag.src = midtransScriptUrl
+    // Optional: set script attribute, for example snap.js have data-client-key attribute
+    // (change the value according to your client-key)
+    const myMidtransClientKey = envEndpoint.midtransClientKey
+    scriptTag.setAttribute('data-client-key', myMidtransClientKey)
+
+    document.body.appendChild(scriptTag)
     return () => {
       document.body.removeChild(scriptTag)
     }
-  }, [location.state.id])
+  }, [])
 
   const onPaymentClick = async () => {
     const transTokenData = {
@@ -59,10 +62,9 @@ const Payment = () => {
     }
     const transToken = await ApiService.postDataJWT('/midtrans/createPayment', transTokenData)
     console.log(transToken.data.data.snap_token)
-    window.snap.pay(transToken.data.data.snap_token, {
+    await window.snap.pay(transToken.data.data.snap_token, {
       onSuccess: async function (result) {
         /* You may add your own implementation here */
-        alert('payment success!')
         console.log(result)
         const setBookData = {
           id_t_booking: header.id,
@@ -73,13 +75,8 @@ const Payment = () => {
         console.log(res, 'data ')
         navigate('/booking')
       },
-      onPending: async function (result) {
-        /* You may add your own implementation here */
-        alert('wating your payment!')
-      },
       onError: async function (result) {
         /* You may add your own implementation here */
-        alert('payment failed!')
         console.log(result)
         const setBookData = {
           id_t_booking: header.id,
@@ -91,7 +88,6 @@ const Payment = () => {
       },
       onClose: async function () {
         /* You may add your own implementation here */
-        alert('you closed the popup without finishing the payment')
         const setBookData = {
           id_t_booking: header.id,
           order_id: transToken.data.data.order_id,
@@ -125,12 +121,12 @@ const Payment = () => {
             <CRow>
               <CCol xs={2}>Price</CCol>
               <CCol xs={2}>:</CCol>
-              <CCol xs={8}>Rp.{data?.room?.price}</CCol>
+              <CCol xs={8}>{formatMoney(data?.room?.price)}</CCol>
             </CRow>
             <CRow>
               <CCol xs={2}>Date</CCol>
               <CCol xs={2}>:</CCol>
-              <CCol xs={8}>{data?.date_checkin}</CCol>
+              <CCol xs={8}>{formatDate(data?.date_checkin)}</CCol>
             </CRow>
           </CCol>
         </CRow>
@@ -154,7 +150,7 @@ const Payment = () => {
               <CRow>
                 <CCol>Date Book</CCol>
                 <CCol>:</CCol>
-                <CCol>{header?.date_book}</CCol>
+                <CCol>{formatDate(header?.date_book)}</CCol>
               </CRow>
               <CRow>
                 <CCol>Booking ID</CCol>
@@ -182,7 +178,7 @@ const Payment = () => {
               <CRow>
                 <CCol>Grand Total</CCol>
                 <CCol>:</CCol>
-                <CCol>{header?.grandtotal}</CCol>
+                <CCol>{formatMoney(header?.grandtotal)}</CCol>
               </CRow>
             </CCol>
           </CRow>

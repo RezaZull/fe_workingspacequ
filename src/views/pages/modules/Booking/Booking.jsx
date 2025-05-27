@@ -3,6 +3,8 @@ import { CCard, CCardHeader, CCardBody, CCardFooter, CButton } from '@coreui/rea
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import ApiService from '../../../../utils/axios'
 import CImg from '../../../../components/CImg'
+import formatMoney from '../../../../utils/formatMoney'
+import formatDate from '../../../../utils/formatDate'
 
 const Booking = () => {
   const [todo, setTodo] = useState([])
@@ -25,9 +27,9 @@ const Booking = () => {
         </CCardHeader>
         <CCardBody>
           <CImg src={data.room.room_image[0]?.img_path} style={{ width: '200px' }} />
-          <h6>Date : {data.date_checkin}</h6>
+          <h6>Date : {formatDate(data.date_checkin)}</h6>
           <h6>Code : {data.book_code}</h6>
-          <h6>Price : RP.{data.room.price}</h6>
+          <h6>Price : {formatMoney(data.room.price)}</h6>
           <h6>
             Capacity : {data.room.current_capacity}/{data.room.room_type?.max_capacity}
           </h6>

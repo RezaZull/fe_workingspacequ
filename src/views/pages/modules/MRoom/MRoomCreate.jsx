@@ -15,6 +15,7 @@ import { useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
 import { useDispatch } from 'react-redux'
+import CurrencyInput from 'react-currency-input-field'
 
 const MMenuGroupCreate = () => {
   const [name, setName] = useState('')
@@ -75,12 +76,13 @@ const MMenuGroupCreate = () => {
             </CInputGroup>
             <CInputGroup className="mb-3">
               <CInputGroupText>Price</CInputGroupText>
-              <CFormInput
-                type="text"
+              <CurrencyInput
                 placeholder="Room Price"
                 value={price}
-                onChange={(val) => setPrice(val.target.value)}
+                prefix="Rp."
+                onValueChange={(value) => setPrice(value)}
                 required
+                className="form-control"
               />
             </CInputGroup>
             <CFormSelect

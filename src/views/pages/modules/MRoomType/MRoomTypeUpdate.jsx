@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import ApiService from '../../../../utils/axios'
 import fireNotif from '../../../../utils/fireNotif'
 import { useDispatch } from 'react-redux'
+import CurrencyInput from 'react-currency-input-field'
 
 const MRoomTypeUpdate = () => {
   const [name, setName] = useState('')
@@ -26,6 +27,9 @@ const MRoomTypeUpdate = () => {
   const dispatch = useDispatch()
   const todoUpdate = async (e) => {
     e.preventDefault()
+    if (parseInt(low_price) > parseInt(max_price)) {
+      return fireNotif.notifWarning('max price lower than low price')
+    }
     const id = location.state.id
     const data = {
       name,
@@ -87,22 +91,24 @@ const MRoomTypeUpdate = () => {
             </CInputGroup>
             <CInputGroup className="mb-3">
               <CInputGroupText>Max Price</CInputGroupText>
-              <CFormInput
-                type="number"
+              <CurrencyInput
                 placeholder="Max Price"
                 value={max_price}
-                onChange={(val) => setMaxPrice(val.target.value)}
+                prefix="Rp."
+                onValueChange={(value) => setMaxPrice(value)}
                 required
+                className="form-control"
               />
             </CInputGroup>
             <CInputGroup className="mb-3">
               <CInputGroupText>Min Price</CInputGroupText>
-              <CFormInput
-                type="number"
+              <CurrencyInput
                 placeholder="Min Price"
                 value={low_price}
-                onChange={(val) => setLowPrice(val.target.value)}
+                prefix="Rp."
+                onValueChange={(value) => setLowPrice(value)}
                 required
+                className="form-control"
               />
             </CInputGroup>
             <CFormSwitch

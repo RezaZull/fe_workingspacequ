@@ -17,6 +17,8 @@ import {
   CModalFooter,
   CModal,
   CModalTitle,
+  CInputGroup,
+  CFormLabel,
 } from '@coreui/react'
 import ApiService from '../../../../utils/axios'
 import { MaterialReactTable, useMaterialReactTable } from 'material-react-table'
@@ -30,6 +32,7 @@ import envEndpoint from '../../../../utils/envEndpoint'
 import { localStorageKey, localStorageService } from '../../../../utils/localStorageService'
 import formatDate from '../../../../utils/formatDate'
 import formatMoney from '../../../../utils/formatMoney'
+import CurrencyInput from 'react-currency-input-field'
 
 const MRoomDetail = () => {
   const [MRoom, setMRoom] = useState([])
@@ -61,6 +64,12 @@ const MRoomDetail = () => {
     setPayloadUpdatePrice({})
   }
   const todoUpdatePrice = async () => {
+    if (
+      payloadUpdatePrice.price > MRoom?.room_type?.max_price ||
+      payloadUpdatePrice.price < MRoom?.room_type?.low_price
+    ) {
+      return fireNotif.notifWarning('Price must be between min and max price')
+    }
     dispatch({ type: 'set', isLoading: true })
     const resAPi = await ApiService.postDataJWT('/hRoomPrice', payloadUpdatePrice)
     dispatch({ type: 'set', isLoading: false })
@@ -342,7 +351,7 @@ const MRoomDetail = () => {
               <CFormInput
                 className="mb-3"
                 label="Max Price"
-                value={formatMoney(MRoom.room_type.max_price)}
+                value={formatMoney(MRoom?.room_type?.max_price)}
                 disabled={true}
               />
             </CCol>
@@ -350,7 +359,7 @@ const MRoomDetail = () => {
               <CFormInput
                 className="mb-3"
                 label="Low Price"
-                value={formatMoney(MRoom.room_type.low_price)}
+                value={formatMoney(MRoom?.room_type?.low_price)}
                 disabled={true}
               />
             </CCol>
@@ -360,7 +369,7 @@ const MRoomDetail = () => {
               <CFormInput
                 className="mb-3"
                 label="Max Capacity"
-                value={MRoom.room_type.max_capacity}
+                value={MRoom?.room_type?.max_capacity}
                 disabled={true}
               />
             </CCol>
@@ -482,11 +491,26 @@ const MRoomDetail = () => {
           <CCol>
             <CFormInput
               className="mb-3"
-              label="New Price"
+              label="Max Price"
+              value={formatMoney(MRoom?.room_type?.max_price)}
+              disabled={true}
+            />
+            <CFormInput
+              className="mb-3"
+              label="Low Price"
+              value={formatMoney(MRoom?.room_type?.low_price)}
+              disabled={true}
+            />
+            <CFormLabel>New Price</CFormLabel>
+            <CurrencyInput
+              placeholder="New Price"
               value={payloadUpdatePrice.price}
-              onChange={(val) =>
-                setPayloadUpdatePrice({ ...payloadUpdatePrice, price: val.target.value })
+              prefix="Rp."
+              onValueChange={(value) =>
+                setPayloadUpdatePrice({ ...payloadUpdatePrice, price: value })
               }
+              required
+              className="form-control"
             />
           </CCol>
         </CModalBody>

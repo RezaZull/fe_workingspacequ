@@ -1,6 +1,7 @@
 import React from 'react'
 
-const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
+const Dashboard = React.lazy(() => import('./views/pages/modules/Dashboard/Dashboard'))
+// const newDashboard = React.lazy(() => import('./views/pages/modules/Dashboard/Dashboard'))
 const Profile = React.lazy(() => import('./views/pages/modules/Profile/Profile'))
 const Logout = React.lazy(() => import('./views/pages/logout/Logout'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
@@ -39,6 +40,7 @@ const Payment = React.lazy(() => import('./views/pages/modules/Cart/Payment'))
 const Booking = React.lazy(() => import('./views/pages/modules/Booking/Booking'))
 const History = React.lazy(() => import('./views/pages/modules/History/History'))
 const HistoryDetail = React.lazy(() => import('./views/pages/modules/History/HistoryDetail'))
+const Feedback = React.lazy(() => import('./views/pages/modules/Feedback/Feedback'))
 
 const MMenuGroupDetail = React.lazy(
   () => import('./views/pages/modules/MMenuGroup/MMenuGroupDetail'),
@@ -61,6 +63,7 @@ const routes = [
   { path: '/profile', name: 'Profile', element: Profile },
   { path: '/logout', name: 'Profile', element: Logout },
   { path: '/dashboard', name: 'Dashboard', element: Dashboard },
+  // { path: '/dashboard/new', name: 'Dashboard NEW', element: newDashboard },
   { path: '/base', name: 'Base Page', element: Base },
   { path: '/appsetting', name: 'App Setting', element: AppSetting },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
@@ -101,6 +104,7 @@ const routes = [
   { path: '/booking', name: 'Booking List', element: Booking },
   { path: '/history', name: 'History', element: History },
   { path: '/history/detail', name: 'History Detail', element: HistoryDetail },
+  { path: '/feedback', name: 'Feedback', element: Feedback },
   {
     path: '/mastermenugroup/detail/create',
     name: 'Menu Group Detail Create',

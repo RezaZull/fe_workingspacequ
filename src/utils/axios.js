@@ -91,7 +91,7 @@ const ApiService = {
           Authorization: 'Bearer ' + localStorageService.getData(localStorageKey.jwtToken),
         },
       })
-      localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+      // localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
       return response
     } catch (error) {
       console.error(error)
@@ -113,7 +113,8 @@ const ApiService = {
           },
         },
       )
-      localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+      // localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+
       return response
     } catch (error) {
       console.error(error)
@@ -142,7 +143,7 @@ const ApiService = {
           'Content-Type': 'multipart/form-data',
         },
       })
-      localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+      // localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
       return response
     } catch (error) {
       console.error(error)
@@ -161,7 +162,7 @@ const ApiService = {
           },
         },
       )
-      localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+      // localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
       return response
     } catch (error) {
       console.error(error)
@@ -179,7 +180,7 @@ const ApiService = {
           user_id: user.id,
         },
       })
-      localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
+      // localStorageService.setData(localStorageKey.jwtToken, response.data.access_token.token)
       return response
     } catch (error) {
       console.error(error)

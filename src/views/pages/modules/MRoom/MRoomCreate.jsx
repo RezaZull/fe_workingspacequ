@@ -30,7 +30,6 @@ const MMenuGroupCreate = () => {
     const data = {
       name,
       price,
-      current_capacity: 0,
       id_m_room_type,
       flag_active,
     }

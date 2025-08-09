@@ -175,11 +175,7 @@ const HistoryDetail = () => {
           </CRow>
         </CCardBody>
         <CCardFooter>
-          {header?.payment_status == 'success' ? (
-            <CButton onClick={() => onFeedbackClick()} color="success">
-              Feedback
-            </CButton>
-          ) : (
+          {header?.payment_status == 'success' ? null : (
             <CButton
               onClick={() => navigate('/cart/payment', { state: { id: header.id } })}
               color="success"

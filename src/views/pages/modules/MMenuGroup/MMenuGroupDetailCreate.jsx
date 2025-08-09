@@ -22,8 +22,6 @@ const MMenuGroupDetailCreate = () => {
   const [flag_read, setFlagRead] = useState(true)
   const [flag_update, setFlagUpdate] = useState(true)
   const [flag_delete, setFlagDelete] = useState(true)
-  const [flag_import, setFlagImport] = useState(true)
-  const [flag_export, setFlagExport] = useState(true)
   const [flag_active, setFlagActive] = useState(true)
   const Navigate = useNavigate()
   const location = useLocation()
@@ -38,8 +36,6 @@ const MMenuGroupDetailCreate = () => {
       flag_read,
       flag_update,
       flag_delete,
-      flag_import,
-      flag_export,
       flag_active,
     }
 
@@ -138,24 +134,6 @@ const MMenuGroupDetailCreate = () => {
                   checked={flag_delete}
                   size="lg"
                   onChange={(val) => setFlagDelete(val.target.checked)}
-                />
-              </CCol>
-              <CCol xs={4}>
-                <CFormSwitch
-                  className="mb-3"
-                  label="Can Export"
-                  checked={flag_export}
-                  size="lg"
-                  onChange={(val) => setFlagExport(val.target.checked)}
-                />
-              </CCol>
-              <CCol xs={4}>
-                <CFormSwitch
-                  className="mb-3"
-                  label="Can Import"
-                  checked={flag_import}
-                  size="lg"
-                  onChange={(val) => setFlagImport(val.target.checked)}
                 />
               </CCol>
             </CRow>

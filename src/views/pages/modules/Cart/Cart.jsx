@@ -31,7 +31,7 @@ const Baseweb = () => {
   }
   const removeCart = async (id) => {
     dispatch({ type: 'set', isLoading: true })
-    const res = await ApiService.deleteDataJWT('/tCartLine', todo)
+    const res = await ApiService.deleteDataJWT('/tCartLine', id)
     dispatch({ type: 'set', isLoading: false })
     getData()
   }
@@ -129,7 +129,7 @@ const Baseweb = () => {
             ))}
             {todo.length == 0 ? (
               <>
-                <h1 style={{ textAlign: 'center' }}>No Product Available</h1>
+                <h5 style={{ textAlign: 'center', color: '#C6C6C6' }}>No Product Available</h5>
               </>
             ) : null}
           </CListGroup>

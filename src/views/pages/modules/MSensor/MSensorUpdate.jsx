@@ -69,7 +69,7 @@ const MSensorUpdate = () => {
               <CInputGroupText>Name</CInputGroupText>
               <CFormInput
                 type="text"
-                placeholder="Role Name"
+                placeholder="Sensor Name"
                 value={name}
                 onChange={(val) => setName(val.target.value)}
                 required

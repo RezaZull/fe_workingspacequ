@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import ApiService from '../../../../utils/axios'
 import CImg from '../../../../components/CImg'
 import formatMoney from '../../../../utils/formatMoney'
+import fireNotif from '../../../../utils/fireNotif'
 
 const ProductList = () => {
   const dispatch = useDispatch()
@@ -27,6 +28,9 @@ const ProductList = () => {
     dispatch({ type: 'set', isLoading: true })
     const res = await ApiService.postDataJWT('/tCartLine', dataPost)
     dispatch({ type: 'set', isLoading: false })
+    if (res.data.success) {
+      fireNotif.notifSuccess('Successfully add to cart')
+    }
   }
   const ProductCart = ({ data }) => {
     return (
@@ -35,9 +39,7 @@ const ProductList = () => {
         <CCardBody>
           <CImg src={data.room_image[0]?.img_path} style={{ width: '200px' }} />
           <h6>Price : {formatMoney(data.price)}</h6>
-          <h6>
-            Capacity : {data.current_capacity}/{data.room_type?.max_capacity}
-          </h6>
+          <h6>Max Capacity :{data.room_type?.max_capacity}</h6>
           <h6>Type : {data.room_type?.name}</h6>
         </CCardBody>
         <CCardFooter style={{ display: 'flex', justifyContent: 'center' }}>

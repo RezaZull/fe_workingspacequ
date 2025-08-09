@@ -19,7 +19,6 @@ import { useDispatch } from 'react-redux'
 const MMenuGroupUpdate = () => {
   const [name, setName] = useState('')
   const [price, setPrice] = useState('')
-  const [current_capacity, setCurrentCapacity] = useState('')
   const [id_m_room_type, setIdMRoomType] = useState('')
   const [roomTypes, setRoomType] = useState([])
   const [flag_active, setFlagActive] = useState(true)
@@ -33,7 +32,6 @@ const MMenuGroupUpdate = () => {
     const data = {
       name,
       price,
-      current_capacity,
       flag_active,
       id_m_room_type,
     }
@@ -60,7 +58,6 @@ const MMenuGroupUpdate = () => {
       const resRoom = await ApiService.getDataJWT(`/mRoom/${roomId}`)
       const dataMenuGroup = resRoom.data.data
       setName(dataMenuGroup.name)
-      setCurrentCapacity(dataMenuGroup.current_capacity)
       setPrice(dataMenuGroup.price)
       setFlagActive(dataMenuGroup.flag_active)
       setIdMRoomType(dataMenuGroup.id_m_room_type)
@@ -85,17 +82,6 @@ const MMenuGroupUpdate = () => {
                 required
               />
             </CInputGroup>
-
-            {/* <CInputGroup className="mb-3">
-              <CInputGroupText>Current Capacity</CInputGroupText>
-              <CFormInput
-                type="text"
-                placeholder="Room Name"
-                value={current_capacity}
-                onChange={(val) => setCurrentCapacity(val.target.value)}
-                required
-              />
-            </CInputGroup> */}
 
             <CFormSelect
               className="mb-3"

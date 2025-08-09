@@ -61,11 +61,6 @@ const MRoom = () => {
         accessorFn: (row) => formatMoney(row.price),
       },
       {
-        accessorKey: 'current_capacity', //simple recommended way to define a column
-        header: 'Current Capacity', //custom props
-        enableHiding: false, //disable a feature for this column
-      },
-      {
         accessorFn: (row) =>
           row.flag_active ? (
             <CIcon icon={cilCheckCircle} className="text-success" />

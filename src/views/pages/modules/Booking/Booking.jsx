@@ -83,9 +83,7 @@ const Booking = () => {
           <h6>Date : {formatDate(data.date_checkin)}</h6>
           <h6>Code : {data.book_code}</h6>
           <h6>Price : {formatMoney(data.room.price)}</h6>
-          <h6>
-            Capacity : {data.room.current_capacity}/{data.room.room_type?.max_capacity}
-          </h6>
+          <h6>Max Capacity : {data.room.room_type?.max_capacity}</h6>
         </CCardBody>
         <CCardFooter>
           <CButton

@@ -116,7 +116,7 @@ const MMenuGroup = () => {
   return (
     <>
       <CCard className="mb-4">
-        <CCardHeader>Master Menu</CCardHeader>
+        <CCardHeader>Master Menu Group</CCardHeader>
         <CCardBody>
           <CRow>
             <CCol xs={4}>

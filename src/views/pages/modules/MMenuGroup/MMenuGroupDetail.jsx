@@ -118,26 +118,6 @@ const MMenuGroupDetail = () => {
       },
       {
         accessorFn: (row) =>
-          row.flag_import ? (
-            <CIcon icon={cilCheckCircle} className="text-success" />
-          ) : (
-            <CIcon icon={cilXCircle} className="text-danger" />
-          ), //simple recommended way to define a column
-        header: 'Can Import', //custom props
-        enableHiding: false, //disable a feature for this column
-      },
-      {
-        accessorFn: (row) =>
-          row.flag_export ? (
-            <CIcon icon={cilCheckCircle} className="text-success" />
-          ) : (
-            <CIcon icon={cilXCircle} className="text-danger" />
-          ), //simple recommended way to define a column
-        header: 'Can Export', //custom props
-        enableHiding: false, //disable a feature for this column
-      },
-      {
-        accessorFn: (row) =>
           row.flag_active ? (
             <CIcon icon={cilCheckCircle} className="text-success" />
           ) : (

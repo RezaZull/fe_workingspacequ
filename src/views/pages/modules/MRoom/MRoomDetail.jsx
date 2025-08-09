@@ -65,8 +65,8 @@ const MRoomDetail = () => {
   }
   const todoUpdatePrice = async () => {
     if (
-      payloadUpdatePrice.price > MRoom?.room_type?.max_price ||
-      payloadUpdatePrice.price < MRoom?.room_type?.low_price
+      parseInt(payloadUpdatePrice.price) > parseInt(MRoom?.room_type?.max_price) ||
+      parseInt(payloadUpdatePrice.price) < parseInt(MRoom?.room_type?.low_price)
     ) {
       return fireNotif.notifWarning('Price must be between min and max price')
     }
@@ -374,12 +374,7 @@ const MRoomDetail = () => {
               />
             </CCol>
             <CCol xs={4}>
-              <CFormInput
-                className="mb-3"
-                label="Current Capacity"
-                value={MRoom.current_capacity}
-                disabled={true}
-              />
+              <CFormInput className="mb-3" label="Id Room" value={MRoom?.id} disabled={true} />
             </CCol>
           </CRow>
         </CCardBody>

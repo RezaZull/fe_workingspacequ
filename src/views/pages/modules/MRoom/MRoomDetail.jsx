@@ -35,7 +35,7 @@ import formatMoney from '../../../../utils/formatMoney'
 import CurrencyInput from 'react-currency-input-field'
 
 const MRoomDetail = () => {
-  const [MRoom, setMRoom] = useState([])
+  const [MRoom, setMRoom] = useState({})
   const [MRoomSensor, setMRoomSensor] = useState([])
   const [HRoomPrice, setHRoomPrice] = useState([])
   const [RoomImage, setRoomImage] = useState([])
@@ -225,7 +225,7 @@ const MRoomDetail = () => {
               <IconButton
                 onClick={() =>
                   Navigate('/room/detail/update', {
-                    state: { id: row.original.id, id_m_room: MRoom.id },
+                    state: { id: row.original.id, id_m_room: MRoom?.id },
                   })
                 }
               >
@@ -319,13 +319,13 @@ const MRoomDetail = () => {
           ) : null}
           <CRow className="mb-3">
             <CCol xs={4}>
-              <CFormInput className="mb-3" label="Room Name" value={MRoom.name} disabled={true} />
+              <CFormInput className="mb-3" label="Room Name" value={MRoom?.name} disabled={true} />
             </CCol>
             <CCol xs={4}>
               <CFormInput
                 className="mb-3"
                 label="Room Type"
-                value={MRoom.room_type?.name}
+                value={MRoom?.room_type?.name}
                 disabled={true}
               />
             </CCol>
@@ -333,7 +333,7 @@ const MRoomDetail = () => {
               <CFormInput
                 className="mb-3"
                 label="Active"
-                value={MRoom.flag_active}
+                value={MRoom?.flag_active}
                 disabled={true}
               />
             </CCol>
@@ -343,7 +343,7 @@ const MRoomDetail = () => {
               <CFormInput
                 className="mb-3"
                 label="Price"
-                value={formatMoney(MRoom.price)}
+                value={formatMoney(MRoom?.price)}
                 disabled={true}
               />
             </CCol>
@@ -383,7 +383,7 @@ const MRoomDetail = () => {
       <CCard className="mb-4">
         <CCardHeader>Detail Room</CCardHeader>
         <CCardBody>
-          <CTabs activeItemKey="roomSensor">
+          <CTabs defaultActiveItemKey="roomSensor">
             <CTabList variant="tabs">
               <CTab itemKey="roomSensor">Room Sensor</CTab>
               <CTab itemKey="priceHistory">Price History</CTab>
